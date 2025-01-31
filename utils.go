@@ -219,17 +219,17 @@ func parseMsg(msg *pb.WebcastResponse_Message, warnHandler func(...interface{}),
 			groups := u.HostGroup
 			for _, group := range groups {
 				for _, user := range group.Host {
-					urls := make([]string, 5)
-					for _, img := range user.Images {
-						urls = append(urls, img.UrlList...)
-					}
+					// urls := make([]string, 5)
+					// for _, img := range user.Images {
+					// 	urls = append(urls, img.UrlList...)
+					// }
 					users = append(users, &User{
 						ID:       int64(user.Id),
 						Username: user.ProfileId,
 						Nickname: user.Name,
-						ProfilePicture: &ProfilePicture{
-							Urls: urls,
-						},
+						// ProfilePicture: &ProfilePicture{
+						// 	Urls: urls,
+						// },
 					})
 
 				}
@@ -303,6 +303,16 @@ func parseMsg(msg *pb.WebcastResponse_Message, warnHandler func(...interface{}),
 	}
 }
 
+func toProfilePicture(pic *pb.Image) *ProfilePicture {
+	if pic != nil && pic.UrlList != nil {
+		return &ProfilePicture{
+			Urls:       pic.UrlList,
+			IsAnimated: pic.IsAnimated,
+		}
+	}
+	return nil
+}
+
 func cachedHistory(id int64) bool {
 	_, present := msgIDCache.GetOrSet(id, struct{}{}, imcache.WithExpiration(messageHistoryTimeout))
 	return present
@@ -324,16 +334,15 @@ func toUser(u *pb.User) *User {
 	if u.IdStr == "" {
 		username = u.Nickname
 	}
-	user := User{
-		ID:       int64(u.Id),
-		Username: username,
-		Nickname: u.Nickname,
-	}
 
-	if u.AvatarLarge != nil && u.AvatarJpg.UrlList != nil {
-		user.ProfilePicture = &ProfilePicture{
-			Urls: u.AvatarJpg.UrlList,
-		}
+	user := User{
+		ID:           int64(u.Id),
+		Username:     username,
+		Nickname:     u.Nickname,
+		AvatarLarge:  toProfilePicture(u.AvatarLarge),
+		AvatarMedium: toProfilePicture(u.AvatarMedium),
+		AvatarThumb:  toProfilePicture(u.AvatarThumb),
+		AvatarJpg:    toProfilePicture(u.AvatarJpg),
 	}
 
 	user.ExtraAttributes = &ExtraAttributes{
