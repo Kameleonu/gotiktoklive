@@ -245,10 +245,7 @@ type User struct {
 	ID              int64
 	Username        string
 	Nickname        string
-	AvatarLarge     *ProfilePicture
-	AvatarMedium    *ProfilePicture
 	AvatarThumb     *ProfilePicture
-	AvatarJpg       *ProfilePicture
 	ExtraAttributes *ExtraAttributes
 	Badge           *BadgeAttributes
 }
@@ -263,8 +260,7 @@ type UserIdentity struct {
 }
 
 type ProfilePicture struct {
-	Urls       []string
-	IsAnimated bool
+	Urls []string
 }
 
 type ExtraAttributes struct {

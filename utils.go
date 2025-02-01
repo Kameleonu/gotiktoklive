@@ -306,8 +306,7 @@ func parseMsg(msg *pb.WebcastResponse_Message, warnHandler func(...interface{}),
 func toProfilePicture(pic *pb.Image) *ProfilePicture {
 	if pic != nil && pic.UrlList != nil {
 		return &ProfilePicture{
-			Urls:       pic.UrlList,
-			IsAnimated: pic.IsAnimated,
+			Urls: pic.UrlList,
 		}
 	}
 	return nil
@@ -336,13 +335,10 @@ func toUser(u *pb.User) *User {
 	}
 
 	user := User{
-		ID:           int64(u.Id),
-		Username:     username,
-		Nickname:     u.Nickname,
-		AvatarLarge:  toProfilePicture(u.AvatarLarge),
-		AvatarMedium: toProfilePicture(u.AvatarMedium),
-		AvatarThumb:  toProfilePicture(u.AvatarThumb),
-		AvatarJpg:    toProfilePicture(u.AvatarJpg),
+		ID:          int64(u.Id),
+		Username:    username,
+		Nickname:    u.Nickname,
+		AvatarThumb: toProfilePicture(u.AvatarThumb),
 	}
 
 	user.ExtraAttributes = &ExtraAttributes{
